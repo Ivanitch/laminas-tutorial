@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @var  PhpRenderer $this
+ * @var  Album $album
+ */
+
+use Album\Model\Album;
+use Laminas\View\Renderer\PhpRenderer;
+
+$title = $album->title;
+$this->headTitle($title);
+?>
+<h1># <?= $this->escapeHtml($title) ?></h1>
+<hr>
+<p>Title: <?= $album->title ?></p>
+<p>Artist: <?= $album->artist ?></p>

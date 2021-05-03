@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Album\Controller\AlbumController;
+use Application\Controller\IndexController;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -22,7 +24,7 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => AlbumController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -32,7 +34,7 @@ return [
                 'options' => [
                     'route'    => '/application[/:action]',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => IndexController::class,
                         'action'     => 'index',
                     ],
                 ],
