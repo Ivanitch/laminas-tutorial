@@ -1,1 +1,19 @@
-<h1>Blog\Controller\ListController::indexAction()</h1>
+<?php
+/**
+ * @var $posts
+ * @var Post $post
+ */
+
+use Blog\Model\Post;
+
+?>
+
+<h1>Blog</h1>
+
+<?php foreach ($this->posts as $post): ?>
+    <article>
+        <h1 id="post<?= $post->getId() ?>"><?= $post->getTitle() ?></h1>
+
+        <p><?= $post->getText() ?></p>
+    </article>
+<?php endforeach ?>
