@@ -5,6 +5,7 @@ namespace Blog\Model;
 use InvalidArgumentException;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Sql\Sql;
+use Laminas\Hydrator\HydratorInterface;
 use RuntimeException;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Hydrator\ReflectionHydrator;
@@ -18,12 +19,23 @@ class LaminasDbSqlRepository implements PostRepositoryInterface
     private $db;
 
     /**
-     * LaminasDbSqlRepository constructor.
-     * @param AdapterInterface $db
+     * @var HydratorInterface
      */
-    public function __construct(AdapterInterface $db)
-    {
-        $this->db = $db;
+    private $hydrator;
+
+    /**
+     * @var Post
+     */
+    private $postPrototype;
+
+    public function __construct(
+        AdapterInterface $db,
+        HydratorInterface $hydrator,
+        Post $postPrototype
+    ) {
+        $this->db            = $db;
+        $this->hydrator      = $hydrator;
+        $this->postPrototype = $postPrototype;
     }
 
     public function findAllPosts()
@@ -37,24 +49,39 @@ class LaminasDbSqlRepository implements PostRepositoryInterface
             return [];
         }
 
-        $resultSet = new HydratingResultSet(
-            new ReflectionHydrator(),
-            new Post('', '')
-        );
+        $resultSet = new HydratingResultSet($this->hydrator, $this->postPrototype);
         $resultSet->initialize($result);
-
         return $resultSet;
     }
 
-    /**
-     * @param int $id
-     * @return Post|null
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
-    public function findPost(int $id): ?Post
+    public function findPost($id)
     {
-        // TODO: Implement findPost() method.
+        $sql       = new Sql($this->db);
+        $select    = $sql->select('post');
+        $select->where(['id = ?' => $id]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result    = $statement->execute();
+
+        if (! $result instanceof ResultInterface || ! $result->isQueryResult()) {
+            throw new RuntimeException(sprintf(
+                'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                $id
+            ));
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->postPrototype);
+        $resultSet->initialize($result);
+        $post = $resultSet->current();
+
+        if (! $post) {
+            throw new InvalidArgumentException(sprintf(
+                'Blog post with identifier "%s" not found.',
+                $id
+            ));
+        }
+
+        return $post;
     }
 
     /**

@@ -19,5 +19,5 @@ interface PostRepositoryInterface
      * @param  null|int $id Identifier of the post to return.
      * @return Post
      */
-    public function findPost(int $id): ?Post;
+    public function findPost(int $id);
 }

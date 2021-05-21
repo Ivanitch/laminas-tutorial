@@ -1,0 +1,12 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ * @var Post $post
+ */
+
+use Blog\Model\Post;
+$this->headTitle($post->getTitle());
+?>
+
+<h1><?= $this->escapeHtml($post->getTitle()) ?></h1>
+<?= $this->escapeHtml($post->getText()) ?>
