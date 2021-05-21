@@ -9,9 +9,9 @@ interface PostRepositoryInterface
      *
      * Each entry should be a Post instance.
      *
-     * @return null|Post[]
+     * @return Post[]
      */
-    public function findAllPosts(): ?array;
+    public function findAllPosts();
 
     /**
      * Return a single blog post.
