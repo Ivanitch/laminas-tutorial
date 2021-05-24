@@ -10,15 +10,19 @@ return [
     'service_manager' => [
         'aliases' => [
             Model\PostRepositoryInterface::class => Model\LaminasDbSqlRepository::class,
+            Model\PostCommandInterface::class => Model\LaminasDbSqlCommand::class,
         ],
         'factories' => [
             Model\PostRepository::class => InvokableFactory::class,
             Model\LaminasDbSqlRepository::class => Factory\LaminasDbSqlRepositoryFactory::class,
+            Model\PostCommand::class => InvokableFactory::class,
+            Model\LaminasDbSqlCommand::class => Factory\LaminasDbSqlCommandFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\ListController::class => Factory\ListControllerFactory::class,
+            Controller\WriteController::class => Factory\WriteControllerFactory::class,
         ],
     ],
     'router'          => [
@@ -43,6 +47,16 @@ return [
                             ],
                             'constraints' => [
                                 'id' => '[1-9]\d*',
+                            ],
+                        ],
+                    ],
+                    'add' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route'    => '/add',
+                            'defaults' => [
+                                'controller' => Controller\WriteController::class,
+                                'action'     => 'add',
                             ],
                         ],
                     ],
